@@ -9,15 +9,9 @@ import { Page } from "./_lib/interfaces";
 // The route and method are irrelevant right now because of the
 // demostrative nature of the project. What is important though, is 
 // the fact that it is being executed on the server side.
-
-export async function GET(request: Request) {
-	console.log(request)
+export async function POST(request: Request) {
 	const req = await request.json()
-
 	const { userPrompt } = req
-	console.log({userPrompt})
-	// const dirPath = path.join(__dirname, '/testDir')
-	// fs.mkdirSync(dirPath)
 
 	// --- Things to request to ai ---
 	// An array with the pages (title, route and description)
@@ -38,7 +32,7 @@ export async function GET(request: Request) {
 
 	// Make the necesary modifications to the base project using predefined
 	// bash scripts and the information from the ai
-	return NextResponse.json({ success: true })
+	return NextResponse.json({ success: true, pages })
 }
 
 const execute = (command: string) => {
