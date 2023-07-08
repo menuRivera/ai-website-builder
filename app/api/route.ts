@@ -1,7 +1,8 @@
 import { exec } from "child_process";
 import { NextResponse } from "next/server";
-import { getPagesArray } from "./_lib/langchain";
+import { getPageComponent, getPagesArray } from "./_lib/langchain";
 import { Page } from "./_lib/interfaces";
+import * as fs from "node:fs";
 
 // __dirname is equal to ai-website-builder/.next/server/app/api
 // route: /api
@@ -13,33 +14,65 @@ export async function POST(request: Request) {
 	const req = await request.json()
 	const { userPrompt } = req
 
+	console.log(`Creating a website with "${userPrompt}" as user prompt...`)
+
 	// --- Things to request to ai ---
 	// An array with the pages (title, route and description)
 	// The component for each page
-	// The assets
+	// The assets?
 
+	// Delete the previous generated project if any
+	console.log('Removing previous project (if any)...')
+	await execute('rm -rf generated')
+
+	// Get the new project routes
+	console.log('Generating the routes for the website...')
 	const pages: Page[] = await getPagesArray(userPrompt)
+	const routes: string[] = pages.map(page => page.route)
+	console.log('Done!')
 
-	// Create the base project
-	// clone https://github.com/menuRivera/base-nextjs-template	
-	// console.log(await execute(`sh scripts/clone-base-project.sh`))
-	// console.log(await execute('git clone https://github.com/menuRivera/base-nextjs-template'))
+	// Prepare the base project to work on
+	console.log('Preparing the base project...')
+	await execute('git clone https://github.com/menuRivera/base-nextjs-template generated')
+	await execute('npm install --prefix generated')
+	await execute('rm ./generated/pages/index.js')
 
-	// Contextualize the ai about the structure and dependencies of the base project
+	// Create the pages inside @/generated/pages
+	console.log('Creating a file for each route... \n')
+	for (let page of pages) {
+		const { title, description, route } = page
+		const filename: string = route === '/' ? '/index.jsx' : `${route}.jsx`
 
-	// Ask it the generate the required components and pages for the website in an 
-	// array of the form [{title, description, route}]
+		// create the component
+		console.log(`Creating nextjs component for ${route}`)
+		const component: string = await getPageComponent(userPrompt, routes, page)
+
+		// Create the file
+		console.log(`Creating the file ./generated/pages${filename}...`)
+		const stream = fs.createWriteStream(`./generated/pages${filename}`)
+
+		// inject the component into the file
+		console.log(`Injecting the generated component into the file...`)
+		stream.write(component)
+		stream.end()
+		console.log('Done!')
+	}
+
 
 	// Make the necesary modifications to the base project using predefined
 	// bash scripts and the information from the ai
-	return NextResponse.json({ success: true, pages })
+	return NextResponse.json({ success: true, pages, routes })
 }
 
 const execute = (command: string) => {
 	// function for executing shell commands with ease
 	return new Promise((resolve, reject) => {
 		exec(command, (error, stdout, stderr) => {
-			if (!error) return resolve(stdout)
+			if (!error) {
+				console.log(stdout)
+				return resolve(stdout)
+			}
+
 			reject(error || stderr)
 		})
 	})

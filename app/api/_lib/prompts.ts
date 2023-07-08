@@ -4,6 +4,7 @@ export const routesPrompt = new PromptTemplate({
 	inputVariables: ['userPrompt'],
 	template: `
 	Given a website description, you must generate a list of pages in json format that will be required for that website.
+	Don't include nested routes for now
 
 	DESCRIPTION:
 	An university website
@@ -36,18 +37,21 @@ export const imagesPrompt = new PromptTemplate({
 })
 
 export const componentPrompt = new PromptTemplate({
-	inputVariables: ['userPrompt', 'routes', 'pageTitle', 'pageDescription'],
+	inputVariables: ['userPrompt', 'routes', 'pageTitle', 'pageRoute', 'pageDescription'],
 	template: `
-	For each nextjs page information json object, you must create the component as production ready as possible considering the following context:
-	- It is a nexjs project
+	For each page description provided, you must create a nextjs component considering the next context
+	- It is a nexjs project using the pages routing system
 	- It uses MUI component library
+	- You can create links to any website route you consider necessary using the nextjs Link component
+	- Use https://picsum.photos/ for images placeholders
 
 	WEBSITE INFORMATION:
 	description: An university website
-	routes: / /careers 
+	routes: ["/", "/careers"]
 
 	PAGE INFORMATION:
 	title: Home
+	route: /
 	description: The home page for the university website, contains information of the campus, contact information and links to the other pages, contains a landing page, followed by some photos of the campus, reviews of previous students and a contact us segment
 
 	NEXTJS COMPONENT:
@@ -74,9 +78,9 @@ export const componentPrompt = new PromptTemplate({
 						Our Campus
 					</Typography>
 					<Box sx={{{{ display: 'flex', justifyContent: 'center', marginTop: '30px' }}}}>
-						<img src="campus1.png" alt="Campus 1" width="300" height="200" />
-						<img src="campus2.png" alt="Campus 2" width="300" height="200" />
-						<img src="campus3.png" alt="Campus 3" width="300" height="200" />
+						<img src="https://picsum.photos/300/200" alt="Campus 1" width="300" height="200" />
+						<img src="https://picsum.photos/300/200" alt="Campus 2" width="300" height="200" />
+						<img src="https://picsum.photos/300/200"campus3.png" alt="Campus 3" width="300" height="200" />
 					</Box>
 				</Box>
 
@@ -119,6 +123,7 @@ export const componentPrompt = new PromptTemplate({
 
 	PAGE INFORMATION:
 	title: {pageTitle}
+	title: {pageRoute}
 	description: {pageDescription}
 
 	NEXTJS COMPONENT:
