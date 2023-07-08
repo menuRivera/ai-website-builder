@@ -39,7 +39,7 @@ export const getRequiredImagesArray = async (userPrompt: string, pages: Page[]):
 	})
 
 	// Make the request
-	const response = await gpt4.call(prompt)
+	const response = await gpt3.call(prompt)
 
 	// Parse the response
 	const requiredImages: RequiredImage[] = JSON.parse(response)
