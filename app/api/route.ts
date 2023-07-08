@@ -124,7 +124,7 @@ export async function POST(request: Request) {
 		console.timeEnd('total')
 		console.error(error)
 
-		return NextResponse.error().json({success: false, message: error})
+		return NextResponse.json({ success: false, message: error })
 	}
 }
 
