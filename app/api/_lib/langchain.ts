@@ -7,7 +7,8 @@ import { Page } from "./interfaces";
 // OPENAI_API_KEY set 
 
 export const model = new OpenAI({
-	modelName: 'gpt-3.5-turbo',
+	// modelName: 'gpt-3.5-turbo',
+	modelName: 'gpt-4',
 	temperature: 0.9
 })
 
@@ -36,8 +37,7 @@ export const getPageComponent = async (userPrompt: string, routes: string[], pag
 	})
 	
 	const component: string = await model.call(prompt)
-	console.log(component)
-	return component
 
-	// return model.call(prompt)
+	console.log(`${route} component generated!`)
+	return component
 }
