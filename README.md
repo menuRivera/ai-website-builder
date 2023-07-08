@@ -1,10 +1,3 @@
-# Things to do 
-- [ ] Prompt para generación de rutas y páginas
-- [ ] Prompt para generación de componentes
-- [ ] Prompt para generación de componentes
-
-
-# Nextjs default readme
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
 ## Getting Started
