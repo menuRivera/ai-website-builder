@@ -109,11 +109,10 @@ export async function POST(request: Request) {
 			.on('message', msg => console.log(msg))
 		console.log('Done!')
 		console.timeEnd('deployment')
-		console.timeLog('total')
 
 		console.timeEnd('total')
 
-		return NextResponse.json({ success: true, pages, routes })
+		return NextResponse.json({ success: true, pages, routes, url: 'http://localhost:8080' })
 	} catch (error) {
 		console.timeEnd('routes')
 		console.timeEnd('requiredImages')

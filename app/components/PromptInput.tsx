@@ -22,11 +22,15 @@ export default function PromptInput() {
 		})
 		const res  = await raw.json()
 		setIsLoading(false)
-
-		history.go(res.url)
+		console.log({res})
+		if(res.success) {
+			return window.open(res.url, '_blank')
+		} 
+		
+		alert(JSON.stringify(res.message))
 	}
 
-	if (isLoading) return <h1>Loading {userPrompt.current?.value} website...</h1>
+	if (isLoading) return <h1>Creating {userPrompt.current?.value} ...</h1>
 
 	return (
 		<>

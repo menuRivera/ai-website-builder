@@ -98,6 +98,7 @@ export const componentPrompt = new PromptTemplate({
 	- Use the images provided at @/utils/images.json
 	- Import every MUI component you use
 	- Play with the colors to make it look professional
+	- Don't explain the component
 
 	WEBSITE INFORMATION:
 	description: An university website
