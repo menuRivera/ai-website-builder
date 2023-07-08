@@ -1,4 +1,4 @@
-import { exec } from "child_process";
+import { exec, spawn } from "child_process";
 import { NextResponse } from "next/server";
 import { getPageComponent, getPagesArray } from "./_lib/langchain";
 import { Page } from "./_lib/interfaces";
@@ -14,7 +14,7 @@ export async function POST(request: Request) {
 	const req = await request.json()
 	const { userPrompt } = req
 
-	console.log(`Creating a website with "${userPrompt}" as user prompt...`)
+	console.log(`\nCreating a website with "${userPrompt}" as user prompt...\n`)
 
 	// --- Things to request to ai ---
 	// An array with the pages (title, route and description)
@@ -40,11 +40,11 @@ export async function POST(request: Request) {
 	// Create the pages inside @/generated/pages
 	console.log('Creating a file for each route... \n')
 	for (let page of pages) {
-		const { title, description, route } = page
+		const { route } = page
 		const filename: string = route === '/' ? '/index.jsx' : `${route}.jsx`
 
 		// create the component
-		console.log(`Creating nextjs component for ${route}`)
+		console.log(`Creating nextjs component for ${route}...`)
 		const component: string = await getPageComponent(userPrompt, routes, page)
 
 		// Create the file
@@ -58,9 +58,9 @@ export async function POST(request: Request) {
 		console.log('Done!')
 	}
 
+	// todo: deploy the generated project
 
-	// Make the necesary modifications to the base project using predefined
-	// bash scripts and the information from the ai
+	// return NextResponse.redirect('localhost:3001')
 	return NextResponse.json({ success: true, pages, routes })
 }
 

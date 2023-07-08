@@ -1,26 +1,29 @@
 'use client'
 
 import { Button, TextField } from "@mui/material";
+import { useRouter } from "next/router";
 import { FormEvent, useRef, useState } from "react";
 
 export default function PromptInput() {
 	const [isLoading, setIsLoading] = useState(false)
 	const userPrompt = useRef<HTMLInputElement>()
 
-	const startCreation = (e: FormEvent<HTMLFormElement>) => {
+	const startCreation = async (e: FormEvent<HTMLFormElement>) => {
 		e.preventDefault()
 		const prompt = userPrompt.current?.value
 		if (!prompt) return alert('The promp cannot be empty')
 
 		setIsLoading(true)
 
-		setTimeout(() => {
-			alert('your website is ready!')
-			setIsLoading(false)
-		}, 2000)
-
-
 		// call the api with the userPrompt value
+		const raw = await fetch('/api', {
+			method: 'POST',
+			body: JSON.stringify({ userPrompt: prompt })
+		})
+		const res  = await raw.json()
+		setIsLoading(false)
+
+		history.go(res.url)
 	}
 
 	if (isLoading) return <h1>Loading {userPrompt.current?.value} website...</h1>

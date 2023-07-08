@@ -42,8 +42,9 @@ export const componentPrompt = new PromptTemplate({
 	For each page description provided, you must create a nextjs component considering the next context
 	- It is a nexjs project using the pages routing system
 	- It uses MUI component library
-	- You can create links to any website route you consider necessary using the nextjs Link component
+	- You can create links to any website route you consider necessary using the nextjs Link component and not the <a> tag
 	- Use https://picsum.photos/ for images placeholders
+	- Import every MUI component you use
 
 	WEBSITE INFORMATION:
 	description: An university website
@@ -52,7 +53,7 @@ export const componentPrompt = new PromptTemplate({
 	PAGE INFORMATION:
 	title: Home
 	route: /
-	description: The home page for the university website, contains information of the campus, contact information and links to the other pages, contains a landing page, followed by some photos of the campus, reviews of previous students and a contact us segment
+	description: The home page for the university website, contains information of the campus, tuiton facilities and links to the other pages, followed by some photos of the campus, reviews of previous students and a contact us block
 
 	NEXTJS COMPONENT:
 	import {{ Box, Button, Typography }} from "@mui/material";
@@ -78,9 +79,9 @@ export const componentPrompt = new PromptTemplate({
 						Our Campus
 					</Typography>
 					<Box sx={{{{ display: 'flex', justifyContent: 'center', marginTop: '30px' }}}}>
-						<img src="https://picsum.photos/300/200" alt="Campus 1" width="300" height="200" />
-						<img src="https://picsum.photos/300/200" alt="Campus 2" width="300" height="200" />
-						<img src="https://picsum.photos/300/200"campus3.png" alt="Campus 3" width="300" height="200" />
+						<img src="https://picsum.photos/300/200?random=1" alt="Campus 1" width="300" height="200" />
+						<img src="https://picsum.photos/300/200?random=2" alt="Campus 2" width="300" height="200" />
+						<img src="https://picsum.photos/300/200?random=3"campus3.png" alt="Campus 3" width="300" height="200" />
 					</Box>
 				</Box>
 
