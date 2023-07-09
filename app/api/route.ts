@@ -52,7 +52,7 @@ export async function POST(request: Request) {
 		console.log('Removing previous generated project if any...')
 		await execute('rm -rf generated')
 		console.log('Preparing the base project...')
-		await execute('git clone https://github.com/menuRivera/base-nextjs-template generated')
+		await execute('git clone -b bootstrap https://github.com/menuRivera/base-nextjs-template generated')
 		await execute('npm install --prefix generated')
 		await execute('rm ./generated/pages/index.js')
 		console.timeEnd('project')
