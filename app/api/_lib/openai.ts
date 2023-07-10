@@ -8,7 +8,7 @@ const configuration = new Configuration({
 const openai = new OpenAIApi(configuration)
 
 export const createImage = async (requiredImage: RequiredImage, userPrompt: string): Promise<Image> => {
-	const prompt: string = `${requiredImage.description} for a website with the following description: ${userPrompt}`
+	const prompt: string = `${requiredImage.description} for a website with the following description: "${userPrompt}". The image must be as realistic and professional as possible`
 	const response = await openai.createImage({
 		prompt,
 		n: 1,
