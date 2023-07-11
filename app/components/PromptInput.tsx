@@ -24,7 +24,7 @@ export default function PromptInput() {
 		setIsLoading(false)
 		console.log({res})
 		if(res.success) {
-			return window.open(res.url, '_blank')
+			return window.open('/generated')
 		} 
 		
 		alert(JSON.stringify(res.message))
