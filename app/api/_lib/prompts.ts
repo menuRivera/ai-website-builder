@@ -35,6 +35,7 @@ export const imagesPrompt = new PromptTemplate({
 	inputVariables: ['userPrompt', 'pages'],
 	template: `
 	Given an array of pages of a given website, you must infer the required images for the website and create a json object declaring the title and the description of the image.
+	The images array must start with [ and end with ] (just like the example)
 
 	WEBSITE:
 	An university website
@@ -85,6 +86,135 @@ export const imagesPrompt = new PromptTemplate({
 	{pages}
 
 	IMAGES:
+
+	`
+})
+
+export const navbarPrompt = new PromptTemplate({
+	inputVariables: ['userPrompt', 'routes', 'images'],
+	template: `
+	Create a nextjs navbar component using bootstrap, consider the following:
+	- Use only bootstrap clasess to style the markup
+	- The user must be able to navigate to every part of the website from the navbar
+	- Make it responsive
+	- Use the images provided at @/utils/images.json
+	- Play with the colors to make it look professional
+	- Don't explain the component
+
+	WEBSITE INFORMATION:
+	description: An university website
+	routes: ["/", "/careers", "/tuition"]
+	images: {{ "universityLogo": {{ "description": "A university logo", "url": "https://image.com/fdsafwe", }}, "homePageBackground": {{ "description": "The background image for the home page of a university website, shows the main building and a few students passing by", "url": "https://image.com/fdsafsdafweiof", }}, "campus1": {{ "description": "A picture of an university campus, showing the main building", "url": "https://image.com/fd3wlfewl", }}, "campus2": {{ "description": "A picture of an university campus, showing the academic building", "url": "https://image.com/l2wlfll", }}, "campus3": {{ "description": "A picture of an university campus, showing professors chattering", "url": "https://image.com/rlw3llwe", }} }}
+
+	NEXTJS NAVBAR COMPONENT:
+	import images from '@/utils/images.json'
+	import Link from "next/link";
+	import {{useRouter}} from "next/router";
+
+	export default function Navbar() {{
+		const router = useRouter()
+		return (
+			<>
+				<nav className="navbar navbar-expand-lg bg-body-tertiary">
+					<div className="container-fluid">
+						<Link className="navbar-brand text-decoration-none" href="/">
+							<img src={{images.universityLogo.url}} width="30" height="24" class="d-inline-block align-text-top"/>
+								University of Colorado
+						</Link>
+						<button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+							<span className="navbar-toggler-icon"></span>
+						</button>
+						<div className="collapse navbar-collapse" id="navbarSupportedContent">
+							<ul className="navbar-nav me-auto mb-2 mb-lg-0">
+								<li className="nav-item">
+									<Link className={{router.pathname == '/' ? 'nav-link text-decoration-none active' : 'nav-link text-decoration-none'}} href="/">Home</Link>
+								</li>
+								<li className="nav-item">
+									<Link className={{router.pathname == '/careers' ? 'nav-link text-decoration-none active' : 'nav-link text-decoration-none'}} href="/careers">Careers</Link>
+								</li>
+								<li className="nav-item">
+									<Link className={{router.pathname == '/tuition' ? 'nav-link text-decoration-none active' : 'nav-link text-decoration-none'}} href="/tuition">Tuition</Link>
+								</li>
+							</ul>
+						</div>
+					</div>
+				</nav>
+			</>
+		)
+	}}
+
+	WEBSITE INFORMATION:
+	description: {userPrompt}
+	routes: {routes}
+	images: {images}
+
+	NEXTJS NAVBAR COMPONENT: 
+
+	`
+})
+
+export const footerPrompt = new PromptTemplate({
+	inputVariables: ['userPrompt', 'routes'],
+	template: `
+	Create a nextjs footer component using bootstrap, consider the following:
+	- Use only bootstrap clasess to style the markup
+	- Play with the colors to make it look professional
+	- Don't explain the component
+
+	WEBSITE INFORMATION:
+	description: An university website
+	routes: ["/", "/careers", "/tuition"]
+
+	NEXTJS NAVBAR COMPONENT:
+	import Link from "next/link";
+
+	export default function Footer() {{
+		return (
+			<>
+				<footer className="footer bg-light py-5 mt-3">
+					<div className="container">
+						<div className="row">
+							<div className="col-md-6">
+								<h4>About University</h4>
+								<p>The University is dedicated to providing high-quality education and fostering academic excellence. We offer a wide range of programs and opportunities for students to thrive and succeed.</p>
+							</div>
+							<div className="col-md-3">
+								<h4>Quick Links</h4>
+								<ul className="list-unstyled">
+									<li><Link href="/">Home</Link></li>
+									<li><Link href="/careers">Careers</Link></li>
+									<li><Link href="/tuition">Tuition</Link></li>
+								</ul>
+							</div>
+							<div className="col-md-3">
+								<h4>Contact Information</h4>
+								<ul className="list-unstyled">
+									<li><i className="fa fa-map-marker"></i> 123 University Street, City, Country</li>
+									<li><i className="fa fa-phone"></i> +1 (123) 456-7890</li>
+									<li><i className="fa fa-envelope"></i> info@university.edu</li>
+								</ul>
+							</div>
+						</div>
+					</div>
+					<div className="footer-bottom">
+						<div className="container">
+							<div className="row">
+								<div className="col-md-12">
+									<p className="text-center">© 2023 University. All rights reserved.</p>
+								</div>
+							</div>
+						</div>
+					</div>
+				</footer>
+			</>
+		)
+	}}
+
+	WEBSITE INFORMATION:
+	description: {userPrompt}
+	routes: {routes}
+
+	NEXTJS FOOTER COMPONENT: 
 	`
 })
 
@@ -93,16 +223,16 @@ export const componentPrompt = new PromptTemplate({
 	template: `
 	For each page description provided, you must create a nextjs component considering the next context
 	- It is a nexjs project using the pages routing system
-	- It uses MUI component library
+	- Use only bootstrap clasess to style the markup
 	- You can create links to any website route you consider necessary using the nextjs Link component and not the <a> tag
 	- Use the images provided at @/utils/images.json
-	- Import every MUI component you use
 	- Play with the colors to make it look professional
 	- Don't explain the component
+	- Don't include a footer
 
 	WEBSITE INFORMATION:
 	description: An university website
-	routes: ["/", "/careers"]
+	routes: ["/", "/careers", "/tuition"]
 	images: {{ "universityLogo": {{ "description": "A university logo", "url": "https://image.com/fdsafwe", }}, "homePageBackground": {{ "description": "The background image for the home page of a university website, shows the main building and a few students passing by", "url": "https://image.com/fdsafsdafweiof", }}, "campus1": {{ "description": "A picture of an university campus, showing the main building", "url": "https://image.com/fd3wlfewl", }}, "campus2": {{ "description": "A picture of an university campus, showing the academic building", "url": "https://image.com/l2wlfll", }}, "campus3": {{ "description": "A picture of an university campus, showing professors chattering", "url": "https://image.com/rlw3llwe", }} }}
 
 	PAGE INFORMATION:
@@ -112,69 +242,100 @@ export const componentPrompt = new PromptTemplate({
 
 	NEXTJS COMPONENT:
 	import images from '@/utils/images.json'
-	// import everything used
-	import {{ Box, Button, Typography }} from "@mui/material";
 	import Link from "next/link";
 
 	export default function Home() {{
 		return (
-			<Box sx={{{{ textAlign: 'center' }}}}>
-				<Box sx={{{{ height: '100vh', width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}}}>
-					<Box>
-						<Typography variant="h2" component="h1" gutterBottom>
-							University of Colorado
-						</Typography>
-						<Typography variant="body1" component="p">
-							Empowering Minds, Igniting Potential
-						</Typography>
-						<Button sx={{{{marginTop: '20px'}}}} variant="contained">
-							{{/* Do not use anchor tags, use Link instead */}}
-							<Link href='/careers'>Explore careers</Link>
-						</Button>
-					</Box>
-				</Box>
+			<>
+				<header className="bg-primary text-white py-5">
+					<div className="container">
+						<h1 className="display-4">Welcome to ABC University</h1>
+						<p className="lead">Explore our campus and academic programs</p>
+						<Link className="btn btn-light btn-lg" href="/careers">Get Started</Link>
+					</div>
+				</header>
 
-				<Box sx={{{{ backgroundColor: '#f0f0f0', padding: '50px' }}}}>
-					<Typography variant="h4" component="h2" gutterBottom>
-						Our Campus
-					</Typography>
-					<Box sx={{{{ display: 'flex', justifyContent: 'center', marginTop: '30px' }}}}>
-						<img src={{images.campus1.url}} alt={{images.campus1.description}} width="300" height="200" />
-						<img src={{images.campus2.url}} alt={{images.campus1.description}} width="300" height="200" />
-						<img src={{images.campus3.url}} alt={{images.campus1.description}} width="300" height="200" />
-					</Box>
-				</Box>
+				<section className="py-5">
+					<div className="container">
+						<h2 className="text-center mb-4">Our Campus</h2>
+						<div className="row">
+							<div className="col-lg-4 mb-4">
+								<div className="card">
+									<img src={{images.campus1.url}} className="card-img-top" alt={{images.campus1.description}} />
+									<div className="card-body">
+										<h5 className="card-title">Campus Facilities</h5>
+										<p className="card-text">Discover our state-of-the-art facilities, including libraries, research centers, and sports complexes.</p>
+									</div>
+								</div>
+							</div>
+							<div className="col-lg-4 mb-4">
+								<div className="card">
+									<img src={{images.campus2.url}} className="card-img-top" alt={{images.campus2.description}} />
+									<div className="card-body">
+										<h5 className="card-title">Campus Life</h5>
+										<p className="card-text">Experience a vibrant campus life with a wide range of clubs, events, and student organizations.</p>
+									</div>
+								</div>
+							</div>
+							<div className="col-lg-4 mb-4">
+								<div className="card">
+									<img src={{images.campus3.url}} className="card-img-top" alt={{images.campus3.description}} />
+									<div className="card-body">
+										<h5 className="card-title">Campus Location</h5>
+										<p className="card-text">Our campus is located in a beautiful and accessible area, surrounded by stunning natural scenery.</p>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</section>
 
-				<Box sx={{{{ marginTop: '100px' }}}}>
-					<Typography variant="h4" component="h2" gutterBottom>
-						Students opinions
-					</Typography>
-					<Typography variant="body1" component="p">
-						"The University of Colorado has provided me with an incredible educational experience." - Juan Pérez
-					</Typography>
-					<Typography variant="body1" component="p">
-						"I appreciate the University of Colorado for its strong academic programs and research opportunities." - María Gómez
-					</Typography>
-					<Typography variant="body1" component="p">
-						"The University of Colorado has been a transformative experience for me. " - Carlos Rodríguez
-					</Typography>
-				</Box>
+				<section className="bg-light py-5">
+					<div className="container">
+						<h2 className="text-center mb-4">Tuition and Fees</h2>
+						<p className="text-center">We offer affordable and competitive tuition fees for both in-state and out-of-state students. Financial aid and scholarships are available.</p>
+						<div className="text-center">
+							<Link className="btn btn-primary mt-4" href="/tuition">Learn More about Tuition</Link>
+						</div>
+					</div>
+				</section>
 
-				<Box sx={{{{ marginTop: '100px' }}}}>
-					<Typography variant="h4" component="h2" gutterBottom>
-						Contact
-					</Typography>
-					<Typography variant="body1" component="p">
-						Address: 2055 Regent Drive, Boulder, CO 80309, United States
-					</Typography>
-					<Typography variant="body1" component="p">
-						Phone: +1 123-456-7890
-					</Typography>
-					<Typography variant="body1" component="p">
-						Email: info@universityofcolorado.edu
-					</Typography>
-				</Box>
-			</Box>
+				<section className="bg-light py-5">
+					<div className="container">
+						<h2 className="text-center mb-4">Student Reviews</h2>
+						<div id="carouselExampleIndicators" className="carousel slide" data-bs-ride="carousel">
+							<div className="carousel-inner">
+								<div className="carousel-item active">
+									<blockquote className="blockquote text-center">
+										<p className="mb-0">"My experience at ABC University has been exceptional. The professors are knowledgeable and supportive, and the campus offers a vibrant learning environment."</p>
+										<footer className="blockquote-footer">John Doe, Computer Science</footer>
+									</blockquote>
+								</div>
+								<div className="carousel-item">
+									<blockquote className="blockquote text-center">
+										<p className="mb-0">"I love the sense of community at ABC University. There are countless opportunities for personal and academic growth, and the campus facilities are top-notch."</p>
+										<footer className="blockquote-footer">Jane Smith, Biology</footer>
+									</blockquote>
+								</div>
+								<div className="carousel-item">
+									<blockquote className="blockquote text-center">
+										<p className="mb-0">"ABC University provides an inclusive and diverse learning environment. The faculty and staff are dedicated to helping students succeed in their academic and professional journeys."</p>
+										<footer className="blockquote-footer">Mark Johnson, Psychology</footer>
+									</blockquote>
+								</div>
+							</div>
+							<button className="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
+								<span className="carousel-control-prev-icon" aria-hidden="true"></span>
+								<span className="visually-hidden">Previous</span>
+							</button>
+							<button className="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
+								<span className="carousel-control-next-icon" aria-hidden="true"></span>
+								<span className="visually-hidden">Next</span>
+							</button>
+						</div>
+					</div>
+				</section>
+			</>
 		)
 	}}
 

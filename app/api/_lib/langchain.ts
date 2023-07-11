@@ -1,6 +1,6 @@
 import { OpenAI } from "langchain/llms/openai";
-import { componentPrompt, imagesPrompt, routesPrompt } from "./prompts";
-import { RequiredImage, Page } from "./interfaces";
+import { componentPrompt, footerPrompt, imagesPrompt, navbarPrompt, routesPrompt } from "./prompts";
+import { RequiredImage, Page, Image } from "./interfaces";
 
 // Export the client ready to be used
 // In order to use the OpenAI wrapper, you must have an env variable called 
@@ -46,6 +46,39 @@ export const getRequiredImagesArray = async (userPrompt: string, pages: Page[]):
 	console.log({requiredImages})
 
 	return requiredImages	
+}
+
+export const getNavbarComponent = async (userPrompt: string, routes: string[], images: any): Promise<string> => {
+	// Format the prompt
+	const prompt = await navbarPrompt.format({
+		userPrompt,
+		routes: JSON.stringify(routes),
+		images: JSON.stringify(images),
+	})
+
+	// Make the request
+	const navbar: string = await gpt4.call(prompt)
+
+	console.log(`Navbar component generated!`)
+	
+	// Return the component
+	return navbar
+}
+
+export const getFooterComponent = async (userPrompt: string, routes: string[]): Promise<string> => {
+	// Format the prompt
+	const prompt = await footerPrompt.format({
+		userPrompt,
+		routes: JSON.stringify(routes),
+	})
+
+	// Make the request
+	const footer: string = await gpt4.call(prompt)
+
+	console.log(`Footer component generated!`)
+	
+	// Return the component
+	return footer
 }
 
 export const getPageComponent = async (userPrompt: string, routes: string[], page: Page, images: any): Promise<string> => {
