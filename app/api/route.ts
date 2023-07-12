@@ -1,6 +1,6 @@
 import { exec, spawn } from "child_process";
 import { NextResponse } from "next/server";
-import { getFooterComponent, getNavbarComponent, getPageComponent, getPagesArray, getRequiredImagesArray } from "./_lib/langchain";
+import { getFooterComponent, getNavbarComponent, getPageComponent, getPagesArray, getRequiredImagesArray, getStyles } from "./_lib/langchain";
 import { RequiredImage, Page, Image } from "./_lib/interfaces";
 import * as fs from "node:fs";
 import { createImage } from "./_lib/openai";
@@ -52,7 +52,7 @@ export async function POST(request: Request) {
 		log('Removing previous generated project if any...')
 		await execute('rm -rf generated')
 		log('Preparing the base project...')
-		await execute('git clone -b bootstrap https://github.com/menuRivera/base-nextjs-template generated')
+		await execute('git clone https://github.com/menuRivera/base-nextjs-template generated')
 		await execute('npm install --prefix generated')
 		await execute('rm ./generated/pages/index.js')
 		timeEnd('project')
@@ -81,15 +81,21 @@ export async function POST(request: Request) {
 
 		// Create the pages inside @/generated/pages
 		time('components')
-		log('Creating the required nextjs components... \n')
+		log('Creating the required nextjs components and styles... \n')
 
 		// Get the components promises
+		const stylesPromise: Promise<string> = getStyles(userPrompt)
 		const navbarPromise: Promise<string> = getNavbarComponent(userPrompt, routes, imagesObject)
 		const footerPromise: Promise<string> = getFooterComponent(userPrompt, routes)
 		const componentsPromises: Promise<string>[] = pages.map(page => getPageComponent(userPrompt, routes, page, imagesObject))
 
 		// Resolve the promises
-		const [navbar, footer, ...components]: string[] = await Promise.all([navbarPromise, footerPromise, ...componentsPromises])
+		const [styles, navbar, footer, ...components]: string[] = await Promise.all([
+			stylesPromise, 
+			navbarPromise, 
+			footerPromise, 
+			...componentsPromises
+		])
 
 		// Inject the components into the generated project corresponding files
 
@@ -102,6 +108,9 @@ export async function POST(request: Request) {
 			stream.end()
 		})
 
+		const stylesFileStream = fs.createWriteStream('./generated/assets/styles.css')
+		stylesFileStream.write(styles)
+		stylesFileStream.end()
 
 		const navbarFileStream = fs.createWriteStream('./generated/components/navbar.jsx')
 		navbarFileStream.write(navbar)

@@ -353,3 +353,23 @@ export const componentPrompt = new PromptTemplate({
 
 	`
 })
+
+export const stylesPrompt = new PromptTemplate({
+	inputVariables: ['userPrompt'],
+	template: `
+	You are a flawless CSS generator designed to create the styles (css code) for a react component. The styles will always have the following characteristics:
+      - All the website elements, sections, text boxes, containers, call to action and buttons will be round-edged rectangles and will use gradients. 
+      - Sections will strictly meet the following structure: Thin round-edged rectangular shaped sections, extra sections, elements, Call to actions and buttons. 
+
+	Decent separation between each section, element or button.
+      - All buttons and sections will have hover effect with contrast.
+      - All the divs or containers need to have horizontal and vertical separation margins. 
+      - The main div or container will always have horizontal and vertical margins. You should use black or white background with neon gradients.
+      - All added styles will strictly end with their corresponding semicolon (;)
+      - Strictly avoid using equal signs (=) or any other character that is not accepted by CSS
+      - Don't explain the code
+
+	CSS CODE:
+
+	`
+})

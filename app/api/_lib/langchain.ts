@@ -1,5 +1,5 @@
 import { OpenAI } from "langchain/llms/openai";
-import { componentPrompt, footerPrompt, imagesPrompt, navbarPrompt, routesPrompt } from "./prompts";
+import { componentPrompt, footerPrompt, imagesPrompt, navbarPrompt, routesPrompt, stylesPrompt } from "./prompts";
 import { RequiredImage, Page, Image } from "./interfaces";
 
 // Export the client ready to be used
@@ -98,4 +98,16 @@ export const getPageComponent = async (userPrompt: string, routes: string[], pag
 
 	console.log(`${route} component generated!`)
 	return component
+}
+
+export const getStyles = async (userPrompt: string): Promise<string> => {
+	const prompt = await stylesPrompt.format({
+		userPrompt
+	})	
+
+	const styles: string = await gpt4.call(prompt)
+	console.log({styles})
+
+	console.log(`Styles generated!`)
+	return styles
 }
