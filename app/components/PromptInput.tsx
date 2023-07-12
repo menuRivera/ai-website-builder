@@ -4,6 +4,8 @@ import { Button, TextField } from "@mui/material";
 import { useRouter } from "next/router";
 import { FormEvent, useRef, useState } from "react";
 
+const env = process.env.NODE_ENV || 'development'
+
 export default function PromptInput() {
 	const [isLoading, setIsLoading] = useState(false)
 	const userPrompt = useRef<HTMLInputElement>()
@@ -24,7 +26,9 @@ export default function PromptInput() {
 		setIsLoading(false)
 		console.log({res})
 		if(res.success) {
-			return window.open('/generated')
+			// open one site or another depending on the env
+			if (env == 'development') return window.open('http://localhost:8080')
+			return window.open('http://143.198.103.86:8080')
 		} 
 		
 		alert(JSON.stringify(res.message))
